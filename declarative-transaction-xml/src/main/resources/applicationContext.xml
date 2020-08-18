@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 事务管理器 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!--AspectJ tx定义 声明式事务 配置事务的通知（事务增强）-->
+    <!--
+        tx:attributes
+
+        isolation 隔离级别，一般设置为 default
+        propagation 传播行为，一般设置为 required
+        read-only="false" 不是只读
+        timeout 超时时间
+        rollback-for 发生哪些异常时回滚
+        no-rollback-for 发生哪些异常时不回滚
+    -->
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--<tx:method name="read*" propagation="REQUIRED" rollback-for="Exception" />-->
+            <tx:method name="*" propagation="REQUIRED" read-only="false"
+                       isolation="DEFAULT" rollback-for="java.lang.Exception" />
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="interceptorPointCuts"
+                      expression="execution(* wrx.sp.transaction.service..*.*(..))" />
+        <aop:advisor advice-ref="txAdvice"
+                     pointcut-ref="interceptorPointCuts" />
+    </aop:config>
+
+</beans>

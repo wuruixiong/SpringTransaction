@@ -6,6 +6,8 @@
     <modules>
         <module>programmatic-transaction-xml</module>
         <module>programmatic-transaction-annotation</module>
+        <module>declarative-transaction-xml</module>
+        <module>declarative-transaction-annotation</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
